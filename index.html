@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Lead Agent</title>
+</head>
+<body>
+
+    <h1>AI Lead Qualification Agent</h1>
+
+    <textarea id="leadMessage" rows="8" cols="60"
+        placeholder="Enter lead message here..."></textarea>
+
+    <br><br>
+
+    <button onclick="processLead()">
+        Process Lead
+    </button>
+
+    <h2>Result:</h2>
+
+    <pre id="result"></pre>
+
+    <script>
+        async function processLead() {
+
+            const message = document.getElementById("leadMessage").value;
+
+            const response = await fetch("http://127.0.0.1:8000/process-lead", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("result").innerText =
+                JSON.stringify(data, null, 2);
+        }
+    </script>
+
+</body>
+</html>
