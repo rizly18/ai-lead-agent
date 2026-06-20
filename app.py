@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
+from email_generator import generate_email
 import json
 
 load_dotenv()
@@ -103,11 +104,15 @@ def process_lead(lead: LeadRequest):
         clean_json(llm.invoke(scoring_prompt).content)
     )
 
+    # --- Email Generator Agent ---
+    email = generate_email(lead_message)
+
     final_data = {
         "lead_message": lead_message,
         "follow_up": followup,
         "qualification": qualification,
-        "score": scoring
+        "score": scoring,
+        "email": email
     }
 
     save_to_sheet(final_data)
