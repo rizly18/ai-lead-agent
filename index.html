@@ -1,45 +1,258 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Lead Agent</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
 
-    <h1>AI Lead Qualification Agent</h1>
+    <div class="max-w-4xl mx-auto p-8">
 
-    <textarea id="leadMessage" rows="8" cols="60"
-        placeholder="Enter lead message here..."></textarea>
+        <nav class="flex justify-between items-center mb-8">
 
-    <br><br>
+            <h2 class="text-2xl font-bold">
+                AI Lead Agent
+            </h2>
 
-    <button onclick="processLead()">
-        Process Lead
-    </button>
+            <button class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">
+                Dashboard
+            </button>
 
-    <h2>Result:</h2>
+        </nav>
 
-    <pre id="result"></pre>
+        <!-- Header -->
+        <div class="text-center mb-10">
+
+        <div class="inline-block px-4 py-1 rounded-full bg-blue-500/20 text-blue-300 mb-4">
+            AI Powered Lead Qualification
+        </div>
+
+        <h1 class="text-6xl font-bold mb-4">
+            AI Lead Agent
+        </h1>
+
+        <p class="text-xl text-gray-300">
+            Automatically qualify, score and organize marketing agency leads
+        </p>
+
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-8">
+
+        <div class="bg-white rounded-xl shadow-md p-4 text-black">
+            <h3 class="text-gray-500">
+                Total Leads
+            </h3>
+
+            <p class="text-3xl font-bold">
+                127
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-4 text-black">
+            <h3 class="text-gray-500">
+                Hot Leads
+            </h3>
+
+            <p class="text-3xl font-bold text-green-600">
+                42
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-4 text-black">
+            <h3 class="text-gray-500">
+                Conversion Rate
+            </h3>
+
+            <p class="text-3xl font-bold">
+                33%
+            </p>
+        </div>
+
+        </div>
+
+        <!-- Input Card -->
+        <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-md p-6">
+
+            <h2 class="text-xl font-semibold mb-4">
+                Enter Lead Message
+            </h2>
+
+            <textarea
+                id="leadMessage"
+                class="w-full border rounded-lg p-3 h-40 bg-slate-100 text-slate-900 placeholder:text-slate-500"
+                placeholder="Paste lead message here..."
+            ></textarea>
+
+            <button
+            id="processBtn"
+            onclick="processLead()"
+            class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold">
+            Process Lead
+            </button>
+
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="hidden text-center mt-6">
+
+            <div
+                class="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto">
+            </div>
+
+            <p class="mt-3 text-gray-300">
+                Analyzing lead...
+            </p>
+
+        </div>
+
+        <!-- Results -->
+        <div
+            id="results"
+            class="hidden mt-8 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-md p-6"
+        >
+
+            <h2 class="text-2xl font-bold mb-4">
+                Lead Analysis
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold">🎯 Lead Score</h3>
+                    <p id="leadScore" class="text-2xl mt-2"></p>
+                </div>
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold">🧠 Intent</h3>
+                    <p id="intent" class="text-xl mt-2"></p>
+                </div>
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold">💰 Budget</h3>
+                    <p id="budget" class="text-xl mt-2"></p>
+                </div>
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold">⚡ Urgency</h3>
+                    <p id="urgency" class="text-xl mt-2"></p>
+                </div>
+
+            </div>
+
+            <div class="mt-10 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6">
+
+                <h2 class="text-2xl font-bold mb-4">
+                    Recent Leads
+                </h2>
+
+                <div class="space-y-3">
+
+                    <div class="bg-white/10 p-4 rounded-lg">
+                        🔥 HOT | Budget $5000
+                    </div>
+
+                    <div class="bg-white/10 p-4 rounded-lg">
+                        🟡 WARM | Budget $2000
+                    </div>
+
+                    <div class="bg-white/10 p-4 rounded-lg">
+                        🔴 COLD | Budget $500
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <script>
+
         async function processLead() {
 
-            const message = document.getElementById("leadMessage").value;
+            const message =
+                document.getElementById("leadMessage").value;
+                document.getElementById("loading")
+                    .classList.remove("hidden");
 
-            const response = await fetch("http://127.0.0.1:8000/process-lead", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: message
-                })
-            });
+            const btn = document.getElementById("processBtn");
+
+            btn.innerText = "Analyzing...";
+            btn.disabled = true;
+
+            const response = await fetch(
+                "https://ai-lead-agent-p1ud.onrender.com/process-lead",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                }
+            );
 
             const data = await response.json();
 
-            document.getElementById("result").innerText =
-                JSON.stringify(data, null, 2);
+            document.getElementById("loading")
+                .classList.add("hidden");
+
+            document.getElementById("results")
+                .classList.remove("hidden");
+
+            const btn = document.getElementById("processBtn");
+
+            btn.innerText = "Process Lead";
+            btn.disabled = false;
+
+            const score = data.score.lead_score;
+
+            let badge = "";
+
+            if(score === "HOT"){
+
+                badge = `
+                <span class="bg-green-500 text-white px-4 py-2 rounded-full font-bold">
+                    🔥 HOT LEAD
+                </span>
+                `;
+            }
+            else if(score === "WARM"){
+
+                badge = `
+                <span class="bg-yellow-500 text-white px-4 py-2 rounded-full font-bold">
+                    🟡 WARM LEAD
+                </span>
+                `;
+            }
+            else{
+
+                badge = `
+                <span class="bg-red-500 text-white px-4 py-2 rounded-full font-bold">
+                    🔴 COLD LEAD
+                </span>
+                `;
+            }
+
+            document.getElementById("leadScore").innerHTML = badge;
+
+            document.getElementById("intent")
+                .innerText = data.follow_up.intent;
+
+            document.getElementById("budget")
+                .innerText = data.qualification.budget;
+
+            document.getElementById("urgency")
+                .innerText = data.qualification.urgency;
+
         }
+
     </script>
 
 </body>

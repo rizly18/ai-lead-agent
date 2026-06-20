@@ -37,6 +37,10 @@ class LeadRequest(BaseModel):
     message: str
 
 # ---------- API ENDPOINT ----------
+@app.get("/")
+def home():
+    return {"message": "AI Lead Agent API is running."}
+
 @app.post("/process-lead")
 def process_lead(lead: LeadRequest):
     lead_message = lead.message
