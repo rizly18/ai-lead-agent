@@ -35,6 +35,8 @@ llm = ChatGroq(
 
 # ---------- REQUEST SCHEMA ----------
 class LeadRequest(BaseModel):
+    name: str
+    email: str
     message: str
 
 # ---------- API ENDPOINT ----------
@@ -44,6 +46,8 @@ def home():
 
 @app.post("/process-lead")
 def process_lead(lead: LeadRequest):
+    lead_name = lead.name
+    lead_email = lead.email
     lead_message = lead.message
 
     # --- Follow-up Agent ---
@@ -108,11 +112,13 @@ def process_lead(lead: LeadRequest):
     email = generate_email(lead_message)
 
     final_data = {
+        "name": lead_name,
+        "email": lead_email,
         "lead_message": lead_message,
         "follow_up": followup,
         "qualification": qualification,
         "score": scoring,
-        "email": email
+        "email_content": email
     }
 
     save_to_sheet(final_data)
