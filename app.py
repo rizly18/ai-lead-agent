@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from email_generator import generate_email
+from email_sender import send_email
 import json
 
 load_dotenv()
@@ -38,6 +39,11 @@ class LeadRequest(BaseModel):
     name: str
     email: str
     message: str
+
+class EmailRequest(BaseModel):
+    to_email: str
+    subject: str
+    body: str
 
 # ---------- API ENDPOINT ----------
 @app.get("/")
@@ -124,3 +130,17 @@ def process_lead(lead: LeadRequest):
     save_to_sheet(final_data)
 
     return final_data
+
+@app.post("/send-email")
+def send_email_endpoint(request: EmailRequest):
+
+    send_email(
+        request.to_email,
+        request.subject,
+        request.body
+    )
+
+    return {
+        "status": "success",
+        "message": "Email sent successfully"
+    }
