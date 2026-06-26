@@ -347,11 +347,8 @@
 
         async function sendEmail() {
 
-            const email =
-                document.getElementById("leadEmail").value;
-
-            const emailContent =
-                document.getElementById("emailContent").innerText;
+            const email = document.getElementById("leadEmail").value;
+            const emailContent = document.getElementById("emailContent").innerText;
 
             try {
 
@@ -370,16 +367,26 @@
                     }
                 );
 
+                console.log("HTTP Status:", response.status);
+
                 const data = await response.json();
 
-                alert(data.message);
+                console.log("Response:", data);
+
+                if (response.ok) {
+                    alert(data.message);
+                } else {
+                    alert("Error: " + JSON.stringify(data));
+                }
 
             } catch (error) {
 
-                alert("Failed to send email.");
-
                 console.error(error);
+
+                alert(error.message);
+
             }
+
         }
 
     </script>
