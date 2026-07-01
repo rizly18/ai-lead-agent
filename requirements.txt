@@ -6,4 +6,4 @@ python-dotenv
 gspread
 oauth2client
 pydantic
-resend=0.8.0
+resend
